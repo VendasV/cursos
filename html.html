@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Plataforma para Cursos - Compra</title>
+    <style>
+        /* Mesmos estilos anteriores */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #eef6fb;
+            margin: 0;
+            color: #222;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e90ff, #0d47a1);
+            padding: 50px 20px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 4px 12px rgb(0 0 0 / 0.15);
+        }
+
+            header h1 {
+                margin: 0 0 10px;
+                font-weight: 700;
+                font-size: 2.8rem;
+            }
+
+            header p {
+                margin: 0;
+                font-weight: 400;
+                font-size: 1.2rem;
+                opacity: 0.9;
+            }
+
+        nav {
+            background: #0b3d91;
+            padding: 10px 0;
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+        }
+
+            nav a, nav button {
+                color: white;
+                font-weight: 600;
+                font-size: 1rem;
+                border: none;
+                background: none;
+                cursor: pointer;
+                padding: 12px 18px;
+                border-radius: 6px;
+                transition: background-color 0.3s ease, transform 0.2s ease;
+                text-decoration: none;
+            }
+
+                nav a:hover, nav button:hover {
+                    background-color: #1454b3;
+                    transform: scale(1.05);
+                }
+
+                nav button:focus, nav a:focus {
+                    outline: 2px solid #80b3ff;
+                }
+
+        .container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+            section h2 {
+                color: #0b3d91;
+                font-size: 2.2rem;
+                margin-bottom: 25px;
+                border-bottom: 3px solid #1e90ff;
+                display: inline-block;
+                padding-bottom: 6px;
+            }
+
+        .cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px 25px;
+            box-shadow: 0 6px 15px rgb(0 0 0 / 0.1);
+            width: 280px;
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+            cursor: default;
+        }
+
+            .card:hover {
+                box-shadow: 0 14px 35px rgb(30 144 255 / 0.3);
+                transform: translateY(-6px);
+            }
+
+            .card h3 {
+                margin-top: 0;
+                margin-bottom: 15px;
+                color: #0b3d91;
+                font-weight: 700;
+                text-transform: capitalize;
+            }
+
+            .card p {
+                font-size: 1rem;
+                color: #444;
+                line-height: 1.4;
+            }
+
+        .btn-detalhes {
+            margin-top: 18px;
+            background-color: #1e90ff;
+            border: none;
+            color: white;
+            padding: 11px 24px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+            display: inline-block;
+            text-align: center;
+        }
+
+            .btn-detalhes:hover {
+                background-color: #0d6fdc;
+                box-shadow: 0 6px 12px rgb(13 111 220 / 0.5);
+                transform: scale(1.07);
+            }
+
+            .btn-detalhes:active {
+                transform: scale(0.98);
+            }
+
+        #alerta {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background-color: #1e90ff;
+            color: white;
+            padding: 16px 28px;
+            border-radius: 12px;
+            box-shadow: 0 6px 18px rgba(30, 144, 255, 0.6);
+            font-weight: 700;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+            z-index: 9999;
+            max-width: 320px;
+            user-select: none;
+        }
+
+            #alerta.show {
+                opacity: 1;
+                pointer-events: auto;
+            }
+
+        /* Modal Styles */
+        #modal-fundo {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+
+            #modal-fundo.show {
+                display: flex;
+            }
+
+        #modal {
+            background: white;
+            max-width: 500px;
+            width: 90%;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            padding: 25px 30px;
+            position: relative;
+            text-align: center;
+        }
+
+            #modal img {
+                max-width: 100%;
+                border-radius: 10px;
+                margin-bottom: 20px;
+                object-fit: cover;
+                height: 200px;
+            }
+
+            #modal h3 {
+                margin-top: 0;
+                margin-bottom: 15px;
+                color: #0b3d91;
+                font-weight: 700;
+                text-transform: capitalize;
+            }
+
+            #modal p {
+                color: #444;
+                font-size: 1rem;
+                line-height: 1.5;
+            }
+
+            #modal .fechar {
+                position: absolute;
+                top: 12px;
+                right: 15px;
+                font-size: 1.5rem;
+                background: none;
+                border: none;
+                cursor: pointer;
+                color: #555;
+                font-weight: 700;
+            }
+
+                #modal .fechar:hover {
+                    color: #1e90ff;
+                }
+
+        @media (max-width: 768px) {
+            .cards {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .card {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Plataforma para Cursos</h1>
+        <p>Soluções completas para gestão de cursos – compre agora mesmo</p>
+    </header>
+
+    <nav>
+        <a href="#sobre">Sobre</a>
+        <a href="#cursos">Cursos</a>
+        <button id="btn-login">Login</button>
+    </nav>
+
+    <div class="container">
+        <section id="sobre">
+            <h2>Sobre a Plataforma</h2>
+            <p>Oferecemos uma plataforma online para administração completa de cursos presenciais e a distância. Com ela, você pode gerenciar alunos, turmas, pagamentos, emitir certificados e muito mais. — é só comprar e usar.</p>
+        </section>
+
+        <section id="cursos">
+            <h2>Cursos Disponíveis</h2>
+            <div class="cards">
+                <div class="card">
+                    <h3>Engenharia Civil</h3>
+                    <p>Curso completo com módulos sobre estrutura, fundação, planejamento de obras e normas técnicas.</p>
+                    <button class="btn-detalhes" data-curso="engenharia-civil">Ver Detalhes</button>
+                </div>
+                <div class="card">
+                    <h3>Administração de Empresas</h3>
+                    <p>Inclui gestão financeira, RH, marketing e liderança corporativa.</p>
+                    <button class="btn-detalhes" data-curso="administracao">Ver Detalhes</button>
+                </div>
+                <div class="card">
+                    <h3>Desenvolvimento Web</h3>
+                    <p>HTML, CSS, JavaScript, PHP e frameworks modernos para criação de sites e sistemas online.</p>
+                    <button class="btn-detalhes" data-curso="desenvolvimento-web">Ver Detalhes</button>
+                </div>
+                <div class="card">
+                    <h3>Logística e Supply Chain</h3>
+                    <p>Planejamento logístico, controle de estoque, distribuição e indicadores de desempenho.</p>
+                    <button class="btn-detalhes" data-curso="logistica">Ver Detalhes</button>
+                </div>
+                <div class="card">
+                    <h3>Educação Financeira</h3>
+                    <p>Planejamento pessoal, investimentos, orçamento e controle financeiro.</p>
+                    <button class="btn-detalhes" data-curso="educacao-financeira">Ver Detalhes</button>
+                </div>
+                <div class="card">
+                    <h3>Programação</h3>
+                    <p>Lógica de programação, Python, JavaScript, orientação a objetos e estruturas de dados.</p>
+                    <button class="btn-detalhes" data-curso="programacao">Ver Detalhes</button>
+                </div>
+                <div class="card">
+                    <h3>Gestão Empresarial</h3>
+                    <p>Curso de gestão empresarial para sua empresa ou por conhecimento próprio!</p>
+                    <button class="btn-detalhes" data-curso="gestao-empresarial">Ver Detalhes</button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal-fundo" role="dialog" aria-modal="true" aria-labelledby="modal-titulo" tabindex="-1">
+        <div id="modal">
+            <button class="fechar" aria-label="Fechar modal">&times;</button>
+            <img src="" alt="" id="modal-imagem" />
+            <h3 id="modal-titulo"></h3>
+            <p id="modal-descricao"></p>
+            <p id="modal-preco" style="font-weight: 700; margin-top: 15px; color: #0b3d91;"></p>
+        </div>
+    </div>
+
+    <div id="alerta"></div>
+
+    <script>
+        const cursos = {
+            "engenharia-civil": {
+                descricao: "Curso completo com módulos sobre estrutura, fundação, planejamento de obras e normas técnicas.",
+                imagem: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=600&q=80",
+                preco: 'R$ 40,00'
+            },
+            "administracao": {
+                descricao: "Inclui gestão financeira, RH, marketing e liderança corporativa.",
+                imagem: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=600&q=80",
+                preco: 'R$ 35,90'
+            },
+            "desenvolvimento-web": {
+                descricao: "HTML, CSS, JavaScript, PHP e frameworks modernos para criação de sites e sistemas online.",
+                imagem: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=600&q=80",
+                preco: 'R$ 30,00'
+            },
+            "logistica": {
+                descricao: "Planejamento logístico, controle de estoque, distribuição e indicadores de desempenho.",
+                imagem: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=600&q=80",
+                preco: 'R$ 32,90'
+            },
+            "educacao-financeira": {
+                descricao: "Planejamento pessoal, investimentos, orçamento e controle financeiro.",
+                imagem: "https://images.unsplash.com/photo-1542223616-c2ab5e2381f5?auto=format&fit=crop&w=600&q=80",
+                preco: 'R$ 45,50'
+            },
+            "programacao": {
+                descricao: "Lógica de programação, Python, JavaScript, orientação a objetos e estruturas de dados.",
+                imagem: "https://images.unsplash.com/photo-1517433456452-f9633a875f6f?auto=format&fit=crop&w=600&q=80",
+                preco: 'R$ 30,50'
+            },
+            "gestao-empresarial": {
+                descricao: "Curso de gestão empresarial para sua empresa ou por conhecimento próprio!",
+                imagem: "https://images.unsplash.com/photo-1525186402429-50a9fbb47c6f?auto=format&fit=crop&w=600&q=80",
+                preco: 'R$ 20,50'
+            }
+        };
+
+        const alerta = document.getElementById('alerta');
+        const btnsDetalhes = document.querySelectorAll('.btn-detalhes');
+        const btnLogin = document.getElementById('btn-login');
+
+        const modalFundo = document.getElementById('modal-fundo');
+        const modalImagem = document.getElementById('modal-imagem');
+        const modalTitulo = document.getElementById('modal-titulo');
+        const modalDescricao = document.getElementById('modal-descricao');
+        const modalPreco = document.getElementById('modal-preco');
+        const btnFecharModal = modalFundo.querySelector('.fechar');
+
+        // Estado do login armazenado em localStorage para persistência simples
+        let usuarioLogado = localStorage.getItem('usuarioLogado') === 'true';
+
+        // Atualiza texto do botão no carregamento da página
+        function atualizarBotaoLogin() {
+            btnLogin.textContent = usuarioLogado ? 'Logout' : 'Login';
+        }
+        atualizarBotaoLogin();
+
+        function mostrarAlerta(mensagem, duracao = 3000) {
+            alerta.textContent = mensagem;
+            alerta.classList.add('show');
+            setTimeout(() => alerta.classList.remove('show'), duracao);
+        }
+
+        function estaLogado() {
+            return usuarioLogado;
+        }
+
+        btnsDetalhes.forEach(botao => {
+            botao.addEventListener('click', () => {
+                if (!estaLogado()) {
+                    mostrarAlerta('⚠️ Por favor, faça login para ver os detalhes do curso.');
+                    return;
+                }
+                const cursoKey = botao.getAttribute('data-curso');
+                const curso = cursos[cursoKey];
+
+                modalImagem.src = curso.imagem;
+                modalImagem.alt = `Imagem do curso ${cursoKey.replace(/-/g, ' ')}`;
+                modalTitulo.textContent = cursoKey.replace(/-/g, ' ');
+                modalDescricao.textContent = curso.descricao;
+                modalPreco.textContent = `Preço: ${curso.preco}`;
+                modalFundo.classList.add('show');
+                modalFundo.focus();
+            });
+        });
+
+        btnFecharModal.addEventListener('click', () => {
+            modalFundo.classList.remove('show');
+        });
+
+        modalFundo.addEventListener('click', (e) => {
+            if (e.target === modalFundo) {
+                modalFundo.classList.remove('show');
+            }
+        });
+
+        window.addEventListener('keydown', e => {
+            if (e.key === 'Escape' && modalFundo.classList.contains('show')) {
+                modalFundo.classList.remove('show');
+            }
+        });
+
+        btnLogin.addEventListener('click', () => {
+            if (usuarioLogado) {
+                // Logout: limpar estado e redirecionar para login.html
+                usuarioLogado = false;
+                localStorage.setItem('usuarioLogado', 'false');
+                mostrarAlerta('Você saiu da sessão.');
+                atualizarBotaoLogin();
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 800); // esperar o alerta aparecer
+            } else {
+                // Redirecionar para a página de login
+                window.location.href = 'login.html';
+            }
+        });
+    </script>
+</body>
+</html
