@@ -7,7 +7,6 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap');
 
-        /* Animação do fundo */
         @keyframes gradientShift {
             0% {
                 background-position: 0% 50%;
@@ -93,7 +92,6 @@
                 box-shadow: 0 0 8px #1e90ffaa;
             }
 
-        /* Label animado - sobe quando input focado ou preenchido */
         label {
             position: absolute;
             top: 14px;
@@ -186,10 +184,8 @@
                 return;
             }
 
-            // Simulação de salvar no arquivo JSON - backend necessário para salvar de verdade
             try {
-                // Faz o POST para backend que salva login no arquivo login.json
-                const response = await fetch('/save-login', {
+                const response = await fetch('http://localhost:3000/save-login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, senha })
@@ -198,8 +194,8 @@
                 const data = await response.json();
 
                 if (response.ok && data.success) {
-                    localStorage.setItem("usuarioLogado", "true");
-                    window.location.href = "html.html";
+                    alert("Login salvo com sucesso!");
+                    // Aqui você pode redirecionar ou limpar o formulário
                 } else {
                     alert("Erro ao salvar login: " + (data.message || "Tente novamente"));
                 }
