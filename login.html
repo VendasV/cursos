@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Login - Plataforma de Cursos</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap');
+
+        /* Animação do fundo */
+        @keyframes gradientShift {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(270deg, #1e90ff, #0d47a1, #1454b3, #1e90ff);
+            background-size: 800% 800%;
+            animation: gradientShift 15s ease infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #222;
+        }
+
+        .login-box {
+            background: white;
+            width: 380px;
+            padding: 40px 35px 50px;
+            border-radius: 16px;
+            box-shadow: 0 15px 30px rgba(30,144,255,0.25);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+            .login-box:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 25px 40px rgba(30,144,255,0.4);
+            }
+
+            .login-box h2 {
+                margin: 0 0 30px;
+                font-weight: 700;
+                font-size: 2.4rem;
+                color: #0b3d91;
+                text-align: center;
+                letter-spacing: 1.1px;
+                user-select: none;
+            }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 28px;
+        }
+
+        input {
+            width: 100%;
+            border: 2px solid #0b3d91;
+            border-radius: 10px;
+            padding: 14px 16px 14px 16px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            outline: none;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            background: none;
+            color: #222;
+        }
+
+            input::placeholder {
+                color: transparent;
+                pointer-events: none;
+            }
+
+            input:focus {
+                border-color: #1e90ff;
+                box-shadow: 0 0 8px #1e90ffaa;
+            }
+
+        /* Label animado - sobe quando input focado ou preenchido */
+        label {
+            position: absolute;
+            top: 14px;
+            left: 18px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #0b3d91;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            user-select: none;
+            background: white;
+            padding: 0 6px;
+            border-radius: 4px;
+        }
+
+        input:focus + label,
+        input:not(:placeholder-shown) + label {
+            top: -10px;
+            font-size: 0.85rem;
+            color: #1e90ff;
+            font-weight: 700;
+        }
+
+        button {
+            width: 100%;
+            padding: 16px 0;
+            background: linear-gradient(90deg, #1e90ff, #0d6fdc);
+            border: none;
+            border-radius: 14px;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            user-select: none;
+            box-shadow: 0 8px 20px rgba(30,144,255,0.35);
+            transition: background 0.4s ease, box-shadow 0.4s ease, transform 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+            button::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: -75%;
+                width: 50%;
+                height: 100%;
+                background: rgba(255,255,255,0.3);
+                transform: skewX(-25deg);
+                transition: left 0.6s ease;
+            }
+
+            button:hover::before {
+                left: 125%;
+            }
+
+            button:hover {
+                background: linear-gradient(90deg, #0d6fdc, #1e90ff);
+                box-shadow: 0 12px 28px rgba(13,111,220,0.6);
+                transform: scale(1.05);
+            }
+
+            button:active {
+                transform: scale(0.95);
+                box-shadow: 0 6px 15px rgba(13,111,220,0.7);
+            }
+    </style>
+</head>
+<body>
+    <main class="login-box" role="main" aria-label="Formulário de Login">
+        <h2>Login</h2>
+        <div class="input-group">
+            <input type="email" id="email" placeholder=" " required aria-label="Email" autocomplete="username" />
+            <label for="email">Digite seu e-mail</label>
+        </div>
+        <div class="input-group">
+            <input type="password" id="senha" placeholder=" " required aria-label="Senha" autocomplete="current-password" />
+            <label for="senha">Digite sua senha</label>
+        </div>
+        <button id="entrar">Entrar</button>
+    </main>
+
+    <script>
+        document.getElementById("entrar").addEventListener("click", async () => {
+            const email = document.getElementById("email").value.trim();
+            const senha = document.getElementById("senha").value.trim();
+
+            if (!email || !senha) {
+                alert("Por favor, preencha o e-mail e a senha.");
+                return;
+            }
+
+            // Simulação de salvar no arquivo JSON - backend necessário para salvar de verdade
+            try {
+                // Faz o POST para backend que salva login no arquivo login.json
+                const response = await fetch('/save-login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, senha })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    localStorage.setItem("usuarioLogado", "true");
+                    window.location.href = "html.html";
+                } else {
+                    alert("Erro ao salvar login: " + (data.message || "Tente novamente"));
+                }
+            } catch (err) {
+                alert("Erro na conexão com o servidor.");
+                console.error(err);
+            }
+        });
+    </script>
+</body>
+</html>
